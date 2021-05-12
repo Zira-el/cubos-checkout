@@ -31,6 +31,9 @@ const listarProdutos = async (req, res) => {
             }
         res.status(200).json(produtosPreco);
     }
+
+    const todosOsProdutos = listaDeProdutos.filter(produto => produto.estoque > 0);
+    res.status(200).json(todosOsProdutos);
 }
 
 module.exports = {listarProdutos}

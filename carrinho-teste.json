@@ -1,0 +1,22 @@
+{
+    "subTotal": 1518,
+    "dataDeEntrega": "2021-05-21T21:30:27.743Z",
+    "valorDoFrete": 5000,
+    "totalAPagar": 6518,
+    "produtos": [
+      {
+        "id": 3,
+        "quantidade": 1,
+        "nome": "Limpador Cif Multiuso 800g Em Pó",
+        "preco": 999,
+        "categoria": "Limpeza"
+      },
+      {
+        "id": 5,
+        "quantidade": 1,
+        "nome": "Biscoito BAUDUCCO Choco Biscuit Leite 80g",
+        "preco": 519,
+        "categoria": "Bazar"
+      }
+    ]
+  }
