@@ -1,6 +1,5 @@
 const fs = require('fs/promises');
 
-
 const listarProdutos = async (req, res) => {
     const listaDeProdutos = await fs.readFile('../cubos-checkout/data.json').then((resposta) =>{
         const produtos = JSON.parse(resposta);
