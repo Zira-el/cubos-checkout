@@ -46,13 +46,13 @@ Essa rota deverá:
     
 Exemplos:
 
-- `/produtos`
+- `/produtos` (X)
     - Deverá retornar todos os produtos em estoque
-- `/produtos?categoria=bazar`
+- `/produtos?categoria=bazar` (x)
     - Deverá retornar todos os eletrodomésticos que tenham unidades em estoque
-- `/produtos?precoInicial=10000&precoFinal=200000`
+- `/produtos?precoInicial=10000&precoFinal=200000` (x)
     - Deverá retornar todos os produtos que tenham unidades em estoque e custem entre 100 e 200 reais
-- `/produtos?precoInicial=10000&precoFinal=200000&categoria=bazar`
+- `/produtos?precoInicial=10000&precoFinal=200000&categoria=bazar` (x)
     - Deverá retornar todos os produtos que tenham unidades em estoque e custem entre 100 e 200 reais e sejam eletrodomésticos
 
 ---
