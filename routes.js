@@ -1,6 +1,7 @@
 const express = require('express');
 const produtos = require('./controllers/Produtos');
-const carrinho = require('./controllers/Carrinho')
+const carrinho = require('./controllers/Carrinho');
+const date_fns = require('date-fns'); 
 const roteador = express();
 
 
