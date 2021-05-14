@@ -6,6 +6,7 @@ let temNoCarrinho = 0;
 let zerouQuantidade = 0;
 let index = 0;
 let achouID = 0;
+let adicionarAoCarrinho;
 
 const carrinho = {
     subtotal: 0,
@@ -44,10 +45,18 @@ const adicionarProdutos = async (req,res) => {
         return produtos.produtos;
     })
 
-    const adicionarAoCarrinho = listaDeProdutos.find(produto => id === produto.id);
-    if(adicionarAoCarrinho.estoque < quantidade || adicionarAoCarrinho.estoque===0){
-        res.status(200).json({mensagem: "Quantidade insuficiente do produto no estoque."});
+    const encontrou = listaDeProdutos.find(produto => id === produto.id);
+
+    if (!encontrou){
+        res.status(404).json({mensagem: "Produto não encontrado"});
+    } else {
+        adicionarAoCarrinho = encontrou;
     }
+
+    if(adicionarAoCarrinho.estoque < quantidade || adicionarAoCarrinho.estoque===0){
+        return res.status(200).json({mensagem: "Quantidade insuficiente do produto no estoque."});
+    }
+
     try {
         const detalheDoCarrinho = await fs.readFile('../cubos-checkout/carrinho.json').then((resposta) => {
         const carrinho = JSON.parse(resposta);
@@ -170,6 +179,7 @@ const deletarUmItem = async (req,res) => {
                     carrinho.produtos.splice(index-1, 1);
             }}
             if(!achouID){
+                index = 0;
                 res.status(400).json({mensagem: "Não existe este produto adicionado ao carrinho."});
             }
             if(!carrinho.produtos.length){
