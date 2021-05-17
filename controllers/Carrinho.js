@@ -17,6 +17,29 @@ const carrinho = {
 }
 const carrinhoSet = carrinho;
 
+function adicionarProdutosCarrinho(carrinho, adicionarAoCarrinho, quantidade) {
+    carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
+    carrinho.dataDeEntrega =  format(addBusinessDays(new Date(), 15), "dd-MM-yyyy");
+    carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
+    carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
+    Object.defineProperty(adicionarAoCarrinho, 'quantidade', {configurable: true, writable: true, value: quantidade, enumerable: true});
+    delete adicionarAoCarrinho.estoque;
+    carrinho.produtos.push(adicionarAoCarrinho);
+}
+
+function temProdutoNoCarrinho(carrinho, quantidade) {
+    carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
+    carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
+    carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
+}
+
+function atualizacaoDoCarrinho(carrinho, adicionarAoCarrinho, quantidade) {
+    carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
+    carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
+    carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
+    carrinho.produtos.splice(index-1, 1);
+}
+
 const detalharCarrinho = async (req, res) => {
     try {
         const detalheDoCarrinho = await fs.readFile('../cubos-checkout/carrinho.json').then((resposta) => {
@@ -68,20 +91,12 @@ const adicionarProdutos = async (req,res) => {
                 } else {
                     temNoCarrinho++;
                     temProduto.quantidade+=quantidade;
-                    carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
-                    carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
-                    carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
+                    temProdutoNoCarrinho(carrinho, quantidade);
                 }
             }
         }
         if(adicionarAoCarrinho.estoque >= quantidade && adicionarAoCarrinho.estoque !== 0 && temNoCarrinho === 0){
-            carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
-            carrinho.dataDeEntrega =  format(addBusinessDays(new Date(), 15), "dd-MM-yyyy");
-            carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
-            carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
-            Object.defineProperty(adicionarAoCarrinho, 'quantidade', {configurable: true, writable: true, value: quantidade, enumerable: true});
-            delete adicionarAoCarrinho.estoque;
-            carrinho.produtos.push(adicionarAoCarrinho);
+            adicionarProdutosCarrinho(carrinho, adicionarAoCarrinho, quantidade);
         }
         const novoConteudo = JSON.stringify(carrinho, null, 2);
         res.status(201).json(JSON.parse(novoConteudo));
@@ -89,13 +104,7 @@ const adicionarProdutos = async (req,res) => {
         })
     } catch (error) {
         if(adicionarAoCarrinho.estoque >= quantidade && adicionarAoCarrinho.estoque !== 0){
-            carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
-            carrinho.dataDeEntrega =  format(addBusinessDays(new Date(), 15), "dd-MM-yyyy");
-            carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
-            carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
-            Object.defineProperty(adicionarAoCarrinho, 'quantidade', {configurable: true, writable: true, value: quantidade, enumerable: true});
-            delete adicionarAoCarrinho.estoque;
-            carrinho.produtos.push(adicionarAoCarrinho);
+            adicionarProdutosCarrinho(carrinho, adicionarAoCarrinho, quantidade);
         }     
         const novoConteudo = JSON.stringify(carrinho, null, 2);
         res.status(201).json(JSON.parse(novoConteudo));
@@ -134,9 +143,6 @@ const atualizarCarrinho = async (req,res) => {
                         zerouQuantidade++;
                     } else {
                         temProduto.quantidade+=quantidade;
-                        carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
-                        carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
-                        carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
                     }
                 }
             } 
@@ -145,10 +151,7 @@ const atualizarCarrinho = async (req,res) => {
             }
             if(zerouQuantidade > 0){
                 zerouQuantidade = 0;
-                carrinho.subtotal += adicionarAoCarrinho.preco*quantidade;
-                carrinho.valorDoFrete = carrinho.subtotal >= 20000 ? 0 : 5000;
-                carrinho.totalAPagar = carrinho.subtotal + carrinho.valorDoFrete;
-                carrinho.produtos.splice(index-1, 1);
+                atualizacaoDoCarrinho(carrinho, adicionarAoCarrinho, quantidade);
             }
             if(!carrinho.produtos.length){
                 fs.unlink('../cubos-checkout/carrinho.json');
